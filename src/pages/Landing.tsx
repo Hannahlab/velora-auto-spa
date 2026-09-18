@@ -1,213 +1,181 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  BadgeCheck,
-  CalendarCheck,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Droplets,
-  Menu,
-  Quote,
-  ShieldCheck,
-  Sparkles,
-  Star,
-  Truck,
-  X,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight, ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
 
-/* ---------- shared data ---------- */
+/* ---------- palette tones for studio scenes ---------- */
+
+const TONES = {
+  graphite: ["#3a3d44", "#23252a"] as const,
+  champagne: ["#8f8468", "#6b6250"] as const,
+  silver: ["#5a5e66", "#42454c"] as const,
+  midnight: ["#3a4050", "#2b303c"] as const,
+  bronze: ["#6e5f49", "#514637"] as const,
+};
 
 const NAV_LINKS = [
   { label: "Services", href: "#services" },
-  { label: "Results", href: "#results" },
-  { label: "Gallery", href: "#gallery" },
-  { label: "Reviews", href: "#reviews" },
-];
-
-const TRUST_ITEMS = [
-  { icon: ShieldCheck, label: "Fully insured & IDA certified" },
-  { icon: Droplets, label: "pH-neutral, paint-safe chemistry" },
-  { icon: Truck, label: "We detail at your home or office" },
-  { icon: Star, label: "4.9 from 300+ verified reviews" },
-  { icon: Clock, label: "On-time arrival, every booking" },
-  { icon: Sparkles, label: "Ceramic protection up to 2 years" },
-];
-
-const WHY_US = [
-  {
-    icon: Truck,
-    title: "We come to you",
-    text: "A fully-equipped mobile studio van at your home or office. Zero waiting rooms, zero downtime.",
-  },
-  {
-    icon: BadgeCheck,
-    title: "Certified detailers",
-    text: "IDA-certified, insured technicians with 8+ years on concours and daily drivers alike.",
-  },
-  {
-    icon: Droplets,
-    title: "Pro-grade chemistry",
-    text: "pH-neutral shampoos, ceramic-infused sealants and paint-safe tools only.",
-  },
-  {
-    icon: Clock,
-    title: "On-time, every time",
-    text: "Arrival windows you can set your watch to, with live ETA texts the morning of your booking.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Satisfaction promise",
-    text: "If any panel doesn't meet our standard, we re-detail it free within 7 days.",
-  },
-  {
-    icon: Sparkles,
-    title: "Showroom finish",
-    text: "A written inspection under 3 light sources before we call it done. Mirror gloss or it's not finished.",
-  },
+  { label: "Transformation", href: "#transformation" },
+  { label: "Studio", href: "#studio" },
+  { label: "Contact", href: "#book" },
 ];
 
 const SERVICES = [
   {
+    index: "01",
     name: "Essential Detail",
-    price: 149,
-    duration: "2–3 hrs",
-    tagline: "A meticulous reset for a well-kept car.",
+    price: "from $149",
+    duration: "2–3 hours",
+    copy: "The complete reset for a well-kept car — a meticulous hand wash, decontamination and interior refinish, performed to inspection standard.",
     features: [
-      "Two-bucket hand wash & dry",
-      "Wheel, arch & tyre deep clean",
-      "Interior vacuum & wipe-down",
-      "Streak-free glass, inside & out",
-      "6-month paint sealant",
+      "pH-neutral hand wash & foam",
+      "Wheel & arch decontamination",
+      "Interior vacuum & dressing",
+      "Glass, polished and sealed",
     ],
-    featured: false,
+    tone: TONES.graphite,
   },
   {
-    name: "Signature Detail",
-    price: 329,
-    duration: "5–6 hrs",
-    tagline: "Our most-booked full-car transformation.",
+    index: "02",
+    name: "Signature Correction",
+    price: "from $329",
+    duration: "5–6 hours",
+    copy: "Single-stage machine polishing that removes swirl marks and restores true depth of gloss, sealed with a twelve-month ceramic layer.",
     features: [
-      "Everything in Essential",
-      "Single-stage paint enhancement",
-      "Clay bar decontamination",
-      "Deep interior shampoo & steam",
-      "Leather clean & condition",
+      "Clay & chemical decontamination",
+      "Single-stage gloss enhancement",
       "12-month ceramic sealant",
+      "Leather feed & interior deep clean",
     ],
-    featured: true,
+    tone: TONES.champagne,
   },
   {
-    name: "Showroom Package",
-    price: 649,
+    index: "03",
+    name: "Showroom Ceramic",
+    price: "from $649",
     duration: "1–2 days",
-    tagline: "Concours-level care, entirely at your door.",
+    copy: "Multi-stage paint correction finished with a certified two-year ceramic coating — the standard we hold our own vehicles to.",
     features: [
-      "Everything in Signature",
       "Multi-stage paint correction",
       "2-year certified ceramic coating",
-      "Engine bay detail",
-      "Headlight restoration",
-      "Complimentary follow-up wash",
+      "Engine bay & trim restoration",
+      "Collection & return available",
     ],
-    featured: false,
+    tone: TONES.bronze,
   },
 ];
 
 const GALLERY = [
-  { title: "Midnight GT — Paint correction", label: "Exterior" },
-  { title: "Alpine White SUV — Interior reset", label: "Interior" },
-  { title: "Heritage Roadster — Ceramic coat", label: "Coating" },
-  { title: "Coupe S — Wheel-off detail", label: "Wheels" },
-  { title: "Executive Sedan — Leather revival", label: "Interior" },
-  { title: "Roadster 300 — Full enhancement", label: "Exterior" },
+  { title: "GT — Multi-stage correction", tone: TONES.graphite, span: "md:col-span-7", aspect: "aspect-[16/10]" },
+  { title: "Roadster — Two-year ceramic", tone: TONES.champagne, span: "md:col-span-5", aspect: "aspect-[4/3]" },
+  { title: "SUV — Interior restoration", tone: TONES.bronze, span: "md:col-span-5", aspect: "aspect-[4/3]" },
+  { title: "Coupe — Wheel-off detail", tone: TONES.silver, span: "md:col-span-7", aspect: "aspect-[16/10]" },
 ];
 
-const REVIEWS = [
+const QUOTES = [
   {
-    name: "Amara Chen",
-    car: "Porsche 911 Carrera",
-    text: "They turned my daily driver into something that looks like it just left the factory. The ceramic coating still beads water months later.",
+    text: "The paint looks deeper than the day it left the factory. They corrected swirls two other studios told me were permanent.",
+    name: "Amara C.",
+    car: "911 Carrera",
   },
   {
-    name: "Marcus Webb",
+    text: "They arrived on the minute, worked quietly, and left the car better than new. This is what a premium service feels like.",
+    name: "Marcus W.",
     car: "Range Rover Autobiography",
-    text: "Booked at 9am, spotless by lunch — in my own driveway. The interior smells and feels brand new. Genuinely impressive operation.",
   },
   {
-    name: "Sofia Delgado",
-    car: "Tesla Model S",
-    text: "Paint correction erased swirls I'd been told were permanent. Detail was obsessive — even the vents and seat rails.",
-  },
-  {
-    name: "James Okafor",
-    car: "BMW M4 Competition",
-    text: "On time, transparent pricing, unreal gloss. Velora is the only detailer I'll let near the M4 now.",
-  },
-  {
-    name: "Lena Fischer",
-    car: "Mercedes G-Wagon",
-    text: "Two kids, one muddy dog, and it came back showroom-perfect. Worth every cent of the Signature package.",
-  },
-  {
-    name: "David Ryu",
-    car: "Audi RS6 Avant",
-    text: "The before/after on my headlights alone justified the price. Professional from quote to final walkaround.",
+    text: "Every panel inspected, every seam detailed. I have not seen a car presented like this outside a showroom.",
+    name: "Sofia D.",
+    car: "Model S",
   },
 ];
 
-/* ---------- small pieces ---------- */
+const STATS = [
+  { value: "1,200+", label: "Details completed" },
+  { value: "4.9", label: "Average client rating" },
+  { value: "2 yr", label: "Ceramic coating warranty" },
+];
 
-function SectionHeading({
-  eyebrow,
-  title,
-  sub,
-  align = "center",
-  dark = false,
+/* ---------- studio scene (photographic composition) ---------- */
+
+function CarScene({
+  tone,
+  horizon = "62%",
+  sweep = 0.14,
 }: {
-  eyebrow: string;
-  title: React.ReactNode;
-  sub?: string;
-  align?: "center" | "left";
-  dark?: boolean;
+  tone: readonly [string, string];
+  horizon?: string;
+  sweep?: number;
 }) {
+  const [body, deep] = tone;
   return (
-    <div className={align === "center" ? "text-center mx-auto max-w-2xl" : "max-w-2xl"}>
-      <p
-        className={`text-xs font-semibold tracking-[0.25em] uppercase ${
-          dark ? "text-gold-soft" : "text-gold-deep"
-        }`}
-      >
-        {eyebrow}
-      </p>
-      <h2
-        className={`mt-4 font-serif-display text-3xl sm:text-4xl md:text-[2.75rem] leading-tight ${
-          dark ? "text-white" : "text-foreground"
-        }`}
-      >
-        {title}
-      </h2>
-      {sub && (
-        <p className={`mt-4 text-base leading-relaxed ${dark ? "text-white/60" : "text-muted-foreground"}`}>
-          {sub}
-        </p>
-      )}
+    <div className="absolute inset-0 overflow-hidden" aria-hidden>
+      {/* studio wall */}
+      <div
+        className="absolute inset-0"
+        style={{ background: "linear-gradient(to bottom, #202225 0%, #2a2d31 68%, #303338 100%)" }}
+      />
+      {/* ceiling light pool */}
+      <div
+        className="absolute left-1/2 top-0 h-[55%] w-[85%] -translate-x-1/2"
+        style={{ background: "radial-gradient(60% 90% at 50% 0%, rgba(255,246,230,0.09), transparent 70%)" }}
+      />
+      {/* floor */}
+      <div
+        className="absolute inset-x-0 bottom-0"
+        style={{ top: horizon, background: "linear-gradient(to bottom, #17181b 0%, #0f1013 100%)" }}
+      />
+      <div className="absolute inset-x-0 h-px" style={{ top: horizon, background: "rgba(255,255,255,0.07)" }} />
+
+      {/* car silhouette */}
+      <div className="absolute" style={{ left: "7%", right: "7%", bottom: `calc(${horizon} - 4px)`, height: "36%" }}>
+        {/* floor reflection */}
+        <div
+          className="absolute inset-x-[4%] top-full h-full rounded-[50%]"
+          style={{
+            background: `linear-gradient(to bottom, ${deep}55, transparent 70%)`,
+            filter: "blur(7px)",
+            transform: "scaleY(0.5)",
+            transformOrigin: "top",
+          }}
+        />
+        {/* cabin */}
+        <div
+          className="absolute left-[18%] right-[24%] top-0 h-[60%] rounded-t-[48%]"
+          style={{ background: `linear-gradient(to bottom, ${body}, ${deep})` }}
+        />
+        {/* body */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-[58%] rounded-[12px_18px_5px_5px]"
+          style={{ background: `linear-gradient(to bottom, ${body} 0%, ${deep} 100%)` }}
+        />
+        {/* roofline highlight */}
+        <div
+          className="absolute left-[21%] right-[26%] top-[2px] h-[3px] rounded-full"
+          style={{ background: "rgba(255,255,255,0.32)" }}
+        />
+        {/* door light sweep */}
+        <div
+          className="absolute inset-y-[12%] left-0 w-full"
+          style={{ background: `linear-gradient(100deg, transparent 30%, rgba(255,255,255,${sweep}) 46%, transparent 60%)` }}
+        />
+        {/* wheels */}
+        <div
+          className="absolute bottom-0 left-[15%] size-[19%] translate-y-[32%] rounded-full"
+          style={{ background: "radial-gradient(circle, #0c0d0f 52%, #1b1d20 58%, #0c0d0f 100%)", boxShadow: "inset 0 0 0 3px rgba(255,255,255,0.05)" }}
+        />
+        <div
+          className="absolute bottom-0 right-[15%] size-[19%] translate-y-[32%] rounded-full"
+          style={{ background: "radial-gradient(circle, #0c0d0f 52%, #1b1d20 58%, #0c0d0f 100%)", boxShadow: "inset 0 0 0 3px rgba(255,255,255,0.05)" }}
+        />
+      </div>
+
+      {/* vignette */}
+      <div className="absolute inset-0" style={{ boxShadow: "inset 0 0 140px rgba(0,0,0,0.5)" }} />
     </div>
   );
 }
 
-function StarRow({ count = 5 }: { count?: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {Array.from({ length: count }).map((_, i) => (
-        <Star key={i} className="h-4 w-4 fill-gold text-gold" aria-hidden />
-      ))}
-    </div>
-  );
-}
+/* ---------- motion pieces ---------- */
 
 function Reveal({
   children,
@@ -220,14 +188,81 @@ function Reveal({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, delay, ease: "easeOut" }}
       className={className}
     >
       {children}
     </motion.div>
+  );
+}
+
+function ImageReveal({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      initial={{ clipPath: "inset(0 0 100% 0)" }}
+      whileInView={{ clipPath: "inset(0 0 0% 0)" }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 1, delay, ease: [0.33, 1, 0.68, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ---------- typographic pieces ---------- */
+
+function SectionLabel({ index, title }: { index: string; title: string }) {
+  return (
+    <div className="flex items-baseline gap-5">
+      <span className="text-[0.65rem] tracking-label text-champagne">{index}</span>
+      <span className="text-[0.65rem] uppercase tracking-label text-muted-foreground">{title}</span>
+    </div>
+  );
+}
+
+function Wordmark() {
+  return (
+    <a href="#top" className="inline-flex flex-col leading-none">
+      <span className="font-display text-[1.35rem] tracking-[0.22em] text-foreground">VELORA</span>
+      <span className="mt-1 text-[0.5rem] tracking-[0.44em] text-muted-foreground">AUTO SPA</span>
+    </a>
+  );
+}
+
+function CtaLink({
+  href,
+  children,
+  solid = false,
+  className = "",
+}: {
+  href: string;
+  children: React.ReactNode;
+  solid?: boolean;
+  className?: string;
+}) {
+  return (
+    <a
+      href={href}
+      className={`inline-flex items-center gap-3 border px-8 py-4 text-[0.68rem] font-medium uppercase tracking-[0.28em] transition-colors duration-300 ${
+        solid
+          ? "border-champagne bg-champagne text-ink hover:bg-transparent hover:text-champagne"
+          : "border-border text-foreground hover:border-champagne hover:text-champagne"
+      } ${className}`}
+    >
+      {children}
+    </a>
   );
 }
 
@@ -236,442 +271,335 @@ function Reveal({
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [beforeAfter, setBeforeAfter] = useState(55);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* ================= NAVBAR ================= */}
+    <div id="top" className="min-h-screen bg-background">
+      {/* ================= NAV ================= */}
       <header
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "glass-card border-x-0 border-t-0 shadow-sm"
-            : "bg-transparent border border-transparent"
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
+          scrolled || menuOpen ? "bg-ink border-b border-border" : "bg-transparent border-b border-transparent"
         }`}
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <a href="#top" className="flex items-center gap-2.5">
-              <span className="flex size-9 items-center justify-center rounded-full bg-ink text-gold">
-                <Sparkles className="h-4 w-4" />
-              </span>
-              <span className="font-serif-display text-xl font-semibold tracking-tight text-foreground">
-                Velora <span className="text-gold-deep">Auto Spa</span>
-              </span>
-            </a>
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
+          <Wordmark />
 
-            <nav className="hidden md:flex items-center gap-8">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
+          <nav className="hidden items-center gap-10 md:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-[0.68rem] font-medium uppercase tracking-[0.24em] text-muted-foreground transition-colors hover:text-champagne"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
 
-            <div className="hidden md:block">
-              <Button asChild className="bg-ink text-white hover:bg-ink/90">
-                <a href="#book">Book Your Detail</a>
-              </Button>
-            </div>
-
-            <button
-              className="md:hidden p-2 text-foreground"
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
+          <div className="hidden md:block">
+            <CtaLink href="#book" solid className="px-6 py-3">
+              Book Your Detail
+            </CtaLink>
           </div>
+
+          <button
+            className="p-2 text-foreground md:hidden"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
 
         {menuOpen && (
-          <div className="md:hidden glass-card border-x-0 border-b">
-            <nav className="flex flex-col px-6 py-4 gap-1">
+          <nav className="border-t border-border bg-ink px-6 py-8 md:hidden">
+            <div className="flex flex-col gap-1">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-md px-2 py-3 text-sm font-medium text-foreground hover:bg-muted"
+                  className="border-b border-border/60 py-4 font-display text-2xl text-foreground"
                 >
                   {link.label}
                 </a>
               ))}
-              <Button asChild className="mt-2 bg-ink text-white hover:bg-ink/90">
-                <a href="#book" onClick={() => setMenuOpen(false)}>
-                  Book Your Detail
-                </a>
-              </Button>
-            </nav>
-          </div>
+            </div>
+            <CtaLink href="#book" solid className="mt-8 w-full justify-center" >
+              Book Your Detail
+            </CtaLink>
+          </nav>
         )}
       </header>
 
       {/* ================= HERO ================= */}
-      <section id="top" className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(1200px 600px at 80% -10%, rgba(215,178,110,0.22), transparent 60%), radial-gradient(900px 500px at 10% 110%, rgba(28,27,24,0.08), transparent 60%)",
-          }}
-        />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 pb-20 md:pt-44 md:pb-28">
-          <div className="grid lg:grid-cols-2 gap-14 items-center">
-            <div>
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-gold-deep"
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-                Premium mobile detailing — we come to you
-              </motion.div>
+      <section className="relative h-[92vh] min-h-[600px] w-full overflow-hidden">
+        <ImageReveal className="absolute inset-0">
+          <CarScene tone={TONES.graphite} horizon="60%" sweep={0.2} />
+        </ImageReveal>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.08 }}
-                className="mt-6 font-serif-display text-4xl sm:text-5xl md:text-6xl leading-[1.05] tracking-tight text-foreground"
-              >
-                Your car. <em className="text-gradient-gold not-italic">Professionally</em> restored.
-              </motion.h1>
+        {/* cinematic scrim */}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-ink/40" />
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.16 }}
-                className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground"
-              >
-                Concours-level detailing at your driveway — paint correction, ceramic
-                protection and interior restoration using pro-grade chemistry. No drop-off.
-                No waiting rooms. Just a car that looks better than the day you bought it.
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.24 }}
-                className="mt-9 flex flex-wrap items-center gap-4"
-              >
-                <Button asChild size="lg" className="h-12 px-7 bg-ink text-white hover:bg-ink/90 text-base">
-                  <a href="#book">
-                    Book Your Detail
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </a>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="h-12 px-7 text-base">
-                  <a href="#services">View Services</a>
-                </Button>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.35 }}
-                className="mt-10 flex items-center gap-4"
-              >
-                <div className="flex -space-x-2.5">
-                  {["A", "M", "S", "J"].map((initial, i) => (
-                    <span
-                      key={i}
-                      className="flex size-9 items-center justify-center rounded-full border-2 border-background bg-gradient-to-br from-gold-soft to-gold text-xs font-bold text-ink"
-                    >
-                      {initial}
-                    </span>
-                  ))}
-                </div>
-                <div>
-                  <StarRow />
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Trusted by 1,200+ drivers · 4.9 average rating
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Hero visual — interactive before/after slider */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.15 }}
-              className="relative"
+        <div className="absolute inset-x-0 bottom-0">
+          <div className="mx-auto max-w-7xl px-6 pb-16 lg:px-10 lg:pb-24">
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-[0.65rem] uppercase tracking-label text-champagne"
             >
-              <BeforeAfterSlider value={beforeAfter} onChange={setBeforeAfter} />
-
-              <div className="absolute -top-4 -left-4 rounded-2xl bg-card border border-border px-4 py-3 shadow-lg">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Gloss reading
-                </p>
-                <p className="mt-0.5 text-xl font-bold text-foreground">
-                  +86<span className="text-sm font-medium text-muted-foreground">%</span>
-                </p>
-              </div>
-              <div className="absolute -bottom-4 -right-4 rounded-2xl bg-ink px-4 py-3 shadow-lg">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-white/60">
-                  Coating
-                </p>
-                <p className="mt-0.5 text-xl font-bold text-gold-soft">2-yr ceramic</p>
-              </div>
+              Precision mobile detailing — by appointment
+            </motion.p>
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.45, ease: "easeOut" }}
+              className="mt-6 font-display text-5xl leading-[1.02] text-foreground sm:text-6xl lg:text-[5.25rem]"
+            >
+              Your car.
+              <br />
+              <em className="font-medium text-champagne">Professionally</em> restored.
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="mt-6 max-w-md text-sm font-light leading-relaxed text-muted-foreground"
+            >
+              Paint correction, ceramic protection and interior restoration — performed at
+              your address, to showroom standard.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.85 }}
+              className="mt-10 flex flex-wrap items-center gap-6"
+            >
+              <CtaLink href="#book" solid>
+                Book Your Detail
+                <ArrowRight className="h-3.5 w-3.5" />
+              </CtaLink>
+              <a
+                href="tel:+15550142030"
+                className="border-b border-border pb-1 text-[0.68rem] uppercase tracking-[0.24em] text-muted-foreground transition-colors hover:border-champagne hover:text-champagne"
+              >
+                +1 (555) 014-2030
+              </a>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ================= TRUST MARQUEE ================= */}
-      <section className="border-y border-border bg-card py-5">
-        <div className="marquee-mask overflow-hidden">
-          <div className="animate-marquee flex w-max items-center gap-14 pr-14">
-            {[...TRUST_ITEMS, ...TRUST_ITEMS].map((item, i) => (
-              <span
-                key={i}
-                className="flex items-center gap-2.5 whitespace-nowrap text-sm font-medium text-muted-foreground"
-              >
-                <item.icon className="h-4 w-4 text-gold-deep" />
-                {item.label}
-              </span>
-            ))}
+      {/* ================= INTRO / STATS ================= */}
+      <section id="studio" className="hairline-x mx-auto max-w-7xl border-b border-border">
+        <div className="grid gap-14 px-6 py-24 lg:grid-cols-[1.2fr_1fr] lg:px-10 lg:py-32">
+          <Reveal>
+            <SectionLabel index="01" title="The Studio" />
+            <h2 className="mt-8 max-w-xl font-display text-4xl leading-[1.08] text-foreground lg:text-5xl">
+              A detailing practice built around patience, light and
+              <em className="text-champagne"> discipline.</em>
+            </h2>
+            <p className="mt-8 max-w-lg text-sm font-light leading-loose text-muted-foreground">
+              Velora is a mobile atelier. We bring the studio to your driveway — controlled
+              lighting, filtered water, museum-grade chemistry — and we do not leave until
+              the car passes inspection under three light sources.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.15} className="flex flex-col justify-end">
+            <dl className="divide-y divide-border border-y border-border">
+              {STATS.map((stat) => (
+                <div key={stat.label} className="flex items-baseline justify-between py-6">
+                  <dt className="order-2 text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground">
+                    {stat.label}
+                  </dt>
+                  <dd className="order-1 font-display text-4xl text-champagne">{stat.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ================= SERVICES (editorial) ================= */}
+      <section id="services" className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+        <Reveal>
+          <SectionLabel index="02" title="Services & Pricing" />
+          <div className="mt-8 flex flex-wrap items-end justify-between gap-6">
+            <h2 className="max-w-xl font-display text-4xl leading-[1.08] text-foreground lg:text-5xl">
+              Three standards of care.
+            </h2>
+            <p className="max-w-xs text-sm font-light leading-relaxed text-muted-foreground">
+              Fixed pricing by vehicle size. Every appointment ends with a written
+              inspection.
+            </p>
           </div>
+        </Reveal>
+
+        <div className="mt-16 space-y-20 lg:space-y-28">
+          {SERVICES.map((service, i) => (
+            <Reveal key={service.index} delay={0.05}>
+              <article className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
+                {/* photo panel */}
+                <ImageReveal
+                  className={`relative lg:col-span-7 ${i % 2 === 1 ? "lg:order-2" : ""}`}
+                >
+                  <div className={`relative ${i % 2 === 1 ? "aspect-[16/11]" : "aspect-[16/10]"} w-full overflow-hidden border border-border`}>
+                    <CarScene tone={service.tone} horizon={i % 2 === 1 ? "56%" : "62%"} sweep={0.16} />
+                    <span className="absolute left-5 top-5 font-display text-lg text-foreground/80">
+                      {service.index}
+                    </span>
+                  </div>
+                </ImageReveal>
+
+                {/* copy panel */}
+                <div className={`lg:col-span-5 ${i % 2 === 1 ? "lg:order-1" : ""}`}>
+                  <p className="text-[0.65rem] uppercase tracking-[0.28em] text-champagne">
+                    {service.price} · {service.duration}
+                  </p>
+                  <h3 className="mt-4 font-display text-3xl text-foreground lg:text-4xl">
+                    {service.name}
+                  </h3>
+                  <p className="mt-5 text-sm font-light leading-loose text-muted-foreground">
+                    {service.copy}
+                  </p>
+                  <ul className="mt-8 divide-y divide-border border-y border-border">
+                    {service.features.map((feature) => (
+                      <li key={feature} className="py-3.5 text-sm text-foreground/80">
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="#book"
+                    className="group mt-8 inline-flex items-center gap-3 text-[0.68rem] font-medium uppercase tracking-[0.28em] text-foreground transition-colors hover:text-champagne"
+                  >
+                    Reserve this service
+                    <span className="inline-block h-px w-8 bg-champagne transition-all duration-300 group-hover:w-12" />
+                  </a>
+                </div>
+              </article>
+            </Reveal>
+          ))}
         </div>
       </section>
 
       {/* ================= BEFORE / AFTER ================= */}
-      <section id="results" className="py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section id="transformation" className="hairline-x border-y border-border bg-ink-2">
+        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
           <Reveal>
-            <SectionHeading
-              eyebrow="The Velora difference"
-              title={
-                <>
-                  Before &amp; after, <em className="text-gradient-gold not-italic">no filters</em>
-                </>
-              }
-              sub="Real vehicles, straight from our vans' galleries. Drag the handle to see the transformation for yourself."
-            />
+            <SectionLabel index="03" title="The Transformation" />
+            <h2 className="mt-8 max-w-2xl font-display text-4xl leading-[1.08] text-foreground lg:text-5xl">
+              Correction, measured in <em className="text-champagne">light.</em>
+            </h2>
           </Reveal>
 
           <Reveal delay={0.1}>
-            <div className="mt-14 max-w-4xl mx-auto">
-              <BeforeAfterSlider value={beforeAfter} onChange={setBeforeAfter} large />
-              <div className="mt-4 flex items-center justify-center gap-8 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <span>Before</span>
-                <span className="h-px w-10 bg-border" />
-                <span>After</span>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ================= SERVICES + PRICING ================= */}
-      <section id="services" className="bg-sand border-y border-border py-20 md:py-28">
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <SectionHeading
-              eyebrow="Services & pricing"
-              title={
-                <>
-                  One pass. <em className="text-gradient-gold not-italic">Flawless finish.</em>
-                </>
-              }
-              sub="Transparent, fixed pricing by vehicle size. Every package includes our satisfaction promise."
-            />
-          </Reveal>
-
-          <div className="mt-14 grid gap-6 lg:grid-cols-3">
-            {SERVICES.map((service, i) => (
-              <Reveal key={service.name} delay={i * 0.08}>
-                <div
-                  className={`relative flex h-full flex-col rounded-2xl p-7 transition-all duration-300 ${
-                    service.featured
-                      ? "bg-ink text-white shadow-xl shadow-ink/20 lg:-translate-y-3"
-                      : "bg-card border border-border shadow-sm hover:shadow-md hover:-translate-y-1"
-                  }`}
-                >
-                  {service.featured && (
-                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gold px-3.5 py-1 text-xs font-bold tracking-wide text-ink">
-                      MOST BOOKED
-                    </span>
-                  )}
-                  <h3 className={`font-serif-display text-2xl ${service.featured ? "text-white" : "text-foreground"}`}>
-                    {service.name}
-                  </h3>
-                  <p className={`mt-1.5 text-sm ${service.featured ? "text-white/60" : "text-muted-foreground"}`}>
-                    {service.tagline}
-                  </p>
-
-                  <div className="mt-6 flex items-baseline gap-2">
-                    <span className={`font-serif-display text-4xl font-semibold ${service.featured ? "text-gold-soft" : "text-foreground"}`}>
-                      ${service.price}
-                    </span>
-                    <span className={`text-sm ${service.featured ? "text-white/50" : "text-muted-foreground"}`}>
-                      / sedan · SUV +$40
-                    </span>
-                  </div>
-                  <p className={`mt-1 flex items-center gap-1.5 text-xs font-medium ${service.featured ? "text-white/50" : "text-muted-foreground"}`}>
-                    <Clock className="h-3.5 w-3.5" />
-                    {service.duration}
-                  </p>
-
-                  <ul className="mt-7 flex-1 space-y-3.5">
-                    {service.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2.5 text-sm">
-                        <Check
-                          className={`mt-0.5 h-4 w-4 shrink-0 ${service.featured ? "text-gold-soft" : "text-gold-deep"}`}
-                        />
-                        <span className={service.featured ? "text-white/85" : "text-foreground/85"}>
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button asChild
-                    className={`mt-8 h-11 w-full text-base ${
-                      service.featured
-                        ? "bg-gold text-ink hover:bg-gold-soft"
-                        : "bg-ink text-white hover:bg-ink/90"
-                    }`}
-                  >
-                    <a href="#book">Book {service.name}</a>
-                  </Button>
+            <div className="relative mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2">
+              {/* BEFORE */}
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink">
+                <div className="absolute inset-0 img-fade-strong">
+                  <CarScene tone={TONES.silver} horizon="58%" sweep={0.02} />
                 </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= WHY US ================= */}
-      <section className="py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-16">
-            <Reveal>
-              <div className="lg:sticky lg:top-28">
-                <SectionHeading
-                  align="left"
-                  eyebrow="Why choose us"
-                  title={
-                    <>
-                      Obsessive about <em className="text-gradient-gold not-italic">the details</em>
-                    </>
-                  }
-                  sub="We built Velora around one idea: the standard you'd expect at a concours event, delivered to your driveway."
-                />
-                <Button asChild size="lg" className="mt-8 h-12 px-7 bg-ink text-white hover:bg-ink/90 text-base">
-                  <a href="#book">
-                    Book Your Detail
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </a>
-                </Button>
+                <span className="absolute left-5 top-5 text-[0.6rem] uppercase tracking-[0.32em] text-foreground/60">
+                  Before
+                </span>
               </div>
-            </Reveal>
 
-            <div className="grid sm:grid-cols-2 gap-5">
-              {WHY_US.map((item, i) => (
-                <Reveal key={item.title} delay={i * 0.06}>
-                  <div className="group h-full rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-                    <div className="flex size-11 items-center justify-center rounded-xl bg-gold/15 text-gold-deep transition-colors group-hover:bg-gold group-hover:text-ink">
-                      <item.icon className="h-5 w-5" />
-                    </div>
-                    <h3 className="mt-4 text-base font-semibold text-foreground">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.text}</p>
-                  </div>
-                </Reveal>
-              ))}
+              {/* AFTER */}
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink">
+                <div className="absolute inset-0 img-fade">
+                  <CarScene tone={TONES.champagne} horizon="58%" sweep={0.22} />
+                </div>
+                <span className="absolute right-5 top-5 text-[0.6rem] uppercase tracking-[0.32em] text-champagne">
+                  After
+                </span>
+              </div>
+
+              {/* center handle */}
+              <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+                <div className="flex size-12 items-center justify-center rounded-full border border-champagne/70 bg-ink/85">
+                  <ChevronLeft className="h-3.5 w-3.5 text-champagne" />
+                  <ChevronRight className="h-3.5 w-3.5 text-champagne" />
+                </div>
+              </div>
             </div>
-          </div>
+          </Reveal>
+
+          <Reveal delay={0.15}>
+            <p className="mt-8 max-w-lg text-sm font-light leading-loose text-muted-foreground">
+              Left: a two-year-old daily driver under studio light. Right: after Signature
+              Correction and a twelve-month ceramic sealant. Same panel, same exposure —
+              only the paint differs.
+            </p>
+          </Reveal>
         </div>
       </section>
 
       {/* ================= GALLERY ================= */}
-      <section id="gallery" className="bg-ink py-20 md:py-28">
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <SectionHeading
-              dark
-              eyebrow="Gallery"
-              title={
-                <>
-                  Recent work, <em className="text-gradient-gold not-italic">fresh from the van</em>
-                </>
-              }
-              sub="A rotating look at the cars we've restored this month — from daily drivers to weekend toys."
-            />
-          </Reveal>
-
-          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {GALLERY.map((item, i) => (
-              <Reveal key={item.title} delay={i * 0.05}>
-                <figure className="group relative overflow-hidden rounded-2xl bg-ink-soft">
-                  <div
-                    className="aspect-[4/3] w-full transition-transform duration-500 group-hover:scale-105"
-                    style={{
-                      background:
-                        i % 2 === 0
-                          ? "linear-gradient(135deg, #2a2926 0%, #454239 55%, #8a7a55 100%)"
-                          : "linear-gradient(135deg, #26262a 0%, #3d3d42 55%, #777d8a 100%)",
-                    }}
-                  />
-                  <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink/90 to-transparent p-4 pt-10">
-                    <p className="text-sm font-semibold text-white">{item.title}</p>
-                    <span className="rounded-full border border-white/20 bg-ink/50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-soft">
-                      {item.label}
-                    </span>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
+      <section className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <SectionLabel index="04" title="Recent Work" />
+              <h2 className="mt-8 font-display text-4xl leading-[1.08] text-foreground lg:text-5xl">
+                From the studio floor.
+              </h2>
+            </div>
+            <p className="max-w-xs text-sm font-light leading-relaxed text-muted-foreground">
+              A rotating record of cars released through the studio this month.
+            </p>
           </div>
+        </Reveal>
+
+        <div className="mt-14 grid gap-6 md:grid-cols-12">
+          {GALLERY.map((item, i) => (
+            <Reveal key={item.title} delay={i * 0.06} className={item.span}>
+              <figure className="group">
+                <ImageReveal>
+                  <div className={`relative ${item.aspect} w-full overflow-hidden border border-border`}>
+                    <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.03]">
+                      <CarScene tone={item.tone} horizon={i % 2 === 0 ? "62%" : "56%"} />
+                    </div>
+                  </div>
+                </ImageReveal>
+                <figcaption className="mt-4 flex items-baseline justify-between border-t border-border pt-3">
+                  <span className="text-xs tracking-wide text-foreground/80">{item.title}</span>
+                  <span className="font-display text-sm text-champagne">0{i + 1}</span>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
         </div>
       </section>
 
-      {/* ================= REVIEWS ================= */}
-      <section id="reviews" className="py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* ================= TESTIMONIALS ================= */}
+      <section className="hairline-x border-y border-border bg-ink-2">
+        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
           <Reveal>
-            <SectionHeading
-              eyebrow="Reviews"
-              title={
-                <>
-                  Drivers who <em className="text-gradient-gold not-italic">became regulars</em>
-                </>
-              }
-              sub="4.9 out of 5 across 300+ verified bookings. Here's what a few of them said."
-            />
+            <SectionLabel index="05" title="Client Words" />
           </Reveal>
 
-          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.map((review, i) => (
-              <Reveal key={review.name} delay={i * 0.05}>
-                <figure className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 shadow-sm">
-                  <Quote className="h-6 w-6 text-gold/60" />
-                  <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-foreground/85">
-                    "{review.text}"
+          <div className="mt-14 grid gap-px border border-border bg-border md:grid-cols-3">
+            {QUOTES.map((quote, i) => (
+              <Reveal key={quote.name} delay={i * 0.08}>
+                <figure className="flex h-full flex-col bg-ink-2 p-10">
+                  <span className="h-px w-8 bg-champagne" />
+                  <blockquote className="mt-8 flex-1 font-display text-[1.35rem] font-light italic leading-snug text-foreground/90">
+                    “{quote.text}”
                   </blockquote>
-                  <figcaption className="mt-6 flex items-center gap-3 border-t border-border pt-5">
-                    <span className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-gold-soft to-gold text-sm font-bold text-ink">
-                      {review.name.charAt(0)}
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">{review.name}</p>
-                      <p className="text-xs text-muted-foreground">{review.car}</p>
-                    </div>
-                    <div className="ml-auto">
-                      <StarRow />
-                    </div>
+                  <figcaption className="mt-10">
+                    <p className="text-[0.68rem] uppercase tracking-[0.28em] text-foreground">
+                      {quote.name}
+                    </p>
+                    <p className="mt-1.5 text-xs font-light text-muted-foreground">{quote.car}</p>
                   </figcaption>
                 </figure>
               </Reveal>
@@ -681,208 +609,87 @@ export default function Landing() {
       </section>
 
       {/* ================= BOOKING CTA ================= */}
-      <section id="book" className="pb-24 pt-4">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <div className="relative overflow-hidden rounded-3xl bg-ink px-6 py-14 text-center shadow-2xl md:px-16 md:py-20">
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "radial-gradient(800px 400px at 50% -20%, rgba(215,178,110,0.25), transparent 65%)",
-                }}
-              />
-              <div className="relative">
-                <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gold/15 text-gold">
-                  <CalendarCheck className="h-7 w-7" />
-                </div>
-                <h2 className="mt-6 font-serif-display text-3xl md:text-5xl text-white">
-                  Ready when <em className="text-gradient-gold not-italic">you are</em>
-                </h2>
-                <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/65">
-                  Tell us your car and postcode — we'll confirm your slot, arrival window and
-                  fixed quote within the hour. Saturdays fill fast.
-                </p>
-                <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-                  <Button asChild size="lg" className="h-12 px-8 bg-gold text-ink hover:bg-gold-soft text-base">
-                    <a href="mailto:book@veloraautospa.com">
-                      Book Your Detail
-                      <ArrowRight className="ml-1 h-4 w-4" />
-                    </a>
-                  </Button>
-                  <a
-                    href="tel:+15550142030"
-                    className="rounded-md px-4 py-2 text-sm font-semibold text-white/80 transition-colors hover:text-gold-soft"
-                  >
-                    or call (555) 014-2030
-                  </a>
-                </div>
-                <p className="mt-6 text-xs text-white/40">
-                  Free quotes · No deposit · Reschedule anytime up to 24h before
-                </p>
-              </div>
+      <section id="book" className="mx-auto max-w-7xl px-6 py-28 lg:px-10 lg:py-40">
+        <Reveal>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-[0.65rem] uppercase tracking-label text-champagne">
+              By appointment only
+            </p>
+            <h2 className="mt-8 font-display text-4xl leading-[1.06] text-foreground sm:text-5xl lg:text-6xl">
+              Book Your Detail.
+            </h2>
+            <p className="mx-auto mt-8 max-w-md text-sm font-light leading-loose text-muted-foreground">
+              Share your vehicle and location. We confirm your slot, arrival window and
+              fixed quote within the hour.
+            </p>
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-6">
+              <CtaLink href="mailto:book@veloraautospa.com" solid>
+                Book Your Detail
+                <ArrowRight className="h-3.5 w-3.5" />
+              </CtaLink>
+              <a
+                href="tel:+15550142030"
+                className="border-b border-border pb-1 text-[0.68rem] uppercase tracking-[0.24em] text-muted-foreground transition-colors hover:border-champagne hover:text-champagne"
+              >
+                +1 (555) 014-2030
+              </a>
             </div>
-          </Reveal>
-        </div>
+            <p className="mt-10 text-[0.65rem] uppercase tracking-[0.24em] text-muted-foreground/70">
+              Free quotes · No deposit · Reschedule up to 24h prior
+            </p>
+          </div>
+        </Reveal>
       </section>
 
       {/* ================= FOOTER ================= */}
-      <footer className="border-t border-border bg-card py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center gap-8 md:flex-row md:justify-between">
-            <a href="#top" className="flex items-center gap-2.5">
-              <span className="flex size-9 items-center justify-center rounded-full bg-ink text-gold">
-                <Sparkles className="h-4 w-4" />
-              </span>
-              <span className="font-serif-display text-lg font-semibold text-foreground">
-                Velora <span className="text-gold-deep">Auto Spa</span>
-              </span>
-            </a>
-            <nav className="flex flex-wrap justify-center gap-x-7 gap-y-2">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-            <div className="flex items-center gap-1.5">
-              <StarRow />
-              <span className="text-sm font-medium text-foreground">4.9</span>
+      <footer className="border-t border-border bg-ink-2">
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+          <div className="grid gap-12 md:grid-cols-3">
+            <div>
+              <Wordmark />
+              <p className="mt-6 max-w-xs text-xs font-light leading-relaxed text-muted-foreground">
+                A mobile detailing atelier. Showroom standards, performed at your address,
+                seven days a week.
+              </p>
+            </div>
+            <div>
+              <p className="text-[0.6rem] uppercase tracking-[0.32em] text-muted-foreground">Studio</p>
+              <ul className="mt-6 space-y-3">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="text-sm text-foreground/75 transition-colors hover:text-champagne"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-[0.6rem] uppercase tracking-[0.32em] text-muted-foreground">Contact</p>
+              <ul className="mt-6 space-y-3 text-sm text-foreground/75">
+                <li>
+                  <a href="mailto:book@veloraautospa.com" className="transition-colors hover:text-champagne">
+                    book@veloraautospa.com
+                  </a>
+                </li>
+                <li>
+                  <a href="tel:+15550142030" className="transition-colors hover:text-champagne">
+                    +1 (555) 014-2030
+                  </a>
+                </li>
+                <li className="font-light text-muted-foreground">Mon – Sun · 8:00 – 18:00</li>
+              </ul>
             </div>
           </div>
-          <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row">
-            <p>© {new Date().getFullYear()} Velora Auto Spa. All rights reserved.</p>
-            <p>Serving the metro area, seven days a week · book@veloraautospa.com</p>
+          <div className="mt-16 flex flex-col items-center justify-between gap-3 border-t border-border pt-8 text-[0.65rem] uppercase tracking-[0.24em] text-muted-foreground md:flex-row">
+            <p>© {new Date().getFullYear()} Velora Auto Spa</p>
+            <p>Detailing by appointment only</p>
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
-
-/* ---------- before/after slider (module-level, below page) ---------- */
-
-function BeforeAfterSlider({
-  value,
-  onChange,
-  large = false,
-}: {
-  value: number;
-  onChange: (v: number) => void;
-  large?: boolean;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
-
-  const setFromClientX = (clientX: number) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const pct = Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100));
-    onChange(pct);
-  };
-
-  useEffect(() => {
-    const move = (e: PointerEvent) => {
-      if (!dragging.current) return;
-      e.preventDefault();
-      setFromClientX(e.clientX);
-    };
-    const up = () => {
-      dragging.current = false;
-    };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-    return () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-    };
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={`relative select-none overflow-hidden rounded-3xl border border-border shadow-xl ${
-        large ? "aspect-[16/8] w-full" : "aspect-[4/3] w-full"
-      }`}
-      onPointerDown={(e) => {
-        dragging.current = true;
-        setFromClientX(e.clientX);
-      }}
-      role="slider"
-      aria-label="Before and after comparison"
-      aria-valuenow={Math.round(value)}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "ArrowLeft") onChange(Math.max(0, value - 4));
-        if (e.key === "ArrowRight") onChange(Math.min(100, value + 4));
-      }}
-    >
-      {/* AFTER (base layer) */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(135deg, #0e0e10 0%, #1d1d21 35%, #3f3e46 70%, #b0a78f 100%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(100deg, transparent 40%, rgba(255,255,255,0.22) 50%, transparent 60%)",
-        }}
-      />
-      <span className="absolute right-4 top-4 rounded-full bg-ink/80 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-gold-soft">
-        After
-      </span>
-
-      {/* BEFORE (clipped layer) */}
-      <div
-        className="absolute inset-0"
-        style={{
-          clipPath: `inset(0 ${100 - value}% 0 0)`,
-          background:
-            "linear-gradient(135deg, #2b2b2b 0%, #55524a 40%, #8f8a7c 75%, #c9c4b4 100%)",
-          filter: "saturate(0.55) brightness(0.82) contrast(0.92)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          clipPath: `inset(0 ${100 - value}% 0 0)`,
-          background:
-            "repeating-linear-gradient(115deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 7px)",
-        }}
-      />
-      <span
-        className="absolute left-4 top-4 rounded-full bg-black/60 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white/80"
-        style={{ opacity: value > 18 ? 1 : 0, transition: "opacity 0.2s" }}
-      >
-        Before
-      </span>
-
-      {/* Divider + handle */}
-      <div
-        className="absolute inset-y-0 w-px bg-white/90 shadow-[0_0_12px_rgba(255,255,255,0.55)]"
-        style={{ left: `${value}%` }}
-      />
-      <div
-        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex size-11 items-center justify-center rounded-full border border-white/70 bg-ink/85 text-white shadow-lg"
-        style={{ left: `${value}%` }}
-      >
-        <ChevronLeft className="h-4 w-4" />
-        <ChevronRight className="h-4 w-4" />
-      </div>
     </div>
   );
 }
