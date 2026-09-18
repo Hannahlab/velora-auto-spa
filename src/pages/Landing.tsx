@@ -16,6 +16,7 @@ const NAV_LINKS = [
   { label: "Services", href: "#services" },
   { label: "Transformation", href: "#transformation" },
   { label: "Process", href: "#process" },
+  { label: "Interior", href: "#interior" },
   { label: "Studio", href: "#studio" },
   { label: "Contact", href: "#book" },
 ];
@@ -108,6 +109,14 @@ const PROCESS = [
     src: "/process-4.jpg",
     alt: "Ceramic coating being applied by hand",
   },
+];
+
+const INTERIOR_FEATURES = [
+  "Deep vacuum & crevice extraction",
+  "Steam clean — vents, seams & rails",
+  "Leather clean, feed & matte finish",
+  "Carpet & upholstery shampoo",
+  "Glass, trim & switchgear dressed",
 ];
 
 const QUOTES = [
@@ -654,12 +663,87 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ================= INTERIOR CARE ================= */}
+      <section id="interior" className="hairline-x mx-auto max-w-7xl border-b border-border px-6 py-24 lg:px-10 lg:py-32">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <SectionLabel index="05" title="Interior Care" />
+              <h2 className="mt-8 max-w-xl font-display text-4xl leading-[1.08] text-foreground lg:text-5xl">
+                Cabins restored to delivery condition.
+              </h2>
+            </div>
+            <p className="max-w-xs text-sm font-light leading-relaxed text-muted-foreground">
+              Steam extraction, leather feeding and trim-safe chemistry — interior work held
+              to the same inspection standard as our paint.
+            </p>
+          </div>
+        </Reveal>
+
+        <div className="mt-14 grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
+          {/* overlapping photo pair */}
+          <div className="relative mb-12 lg:col-span-7 lg:mb-0">
+            <ImageReveal>
+              <div className="relative aspect-[16/10] w-full overflow-hidden border border-border">
+                <img
+                  src="/interior-2.jpg"
+                  alt="Restored luxury car interior"
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover img-fade"
+                />
+                <span className="absolute left-5 top-5 font-display text-lg text-foreground/85">
+                  05
+                </span>
+              </div>
+            </ImageReveal>
+            <ImageReveal delay={0.25} className="absolute -bottom-12 right-0 w-[46%] lg:-right-10">
+              <div className="relative aspect-[4/3] w-full overflow-hidden border border-border bg-ink shadow-2xl shadow-black/60">
+                <img
+                  src="/interior-1.jpg"
+                  alt="Interior detailing in progress"
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover img-fade"
+                />
+              </div>
+            </ImageReveal>
+          </div>
+
+          {/* service list */}
+          <div className="lg:col-span-5">
+            <p className="text-[0.65rem] uppercase tracking-[0.28em] text-champagne">
+              from $129 · 2–4 hours
+            </p>
+            <h3 className="mt-4 font-display text-3xl text-foreground lg:text-4xl">
+              Interior Detail
+            </h3>
+            <p className="mt-5 text-sm font-light leading-loose text-muted-foreground">
+              Available on its own or within any full detail. Every surface — hide, textile,
+              vinyl or alcantara — is treated with the chemistry made for it, nothing else.
+            </p>
+            <ul className="mt-8 divide-y divide-border border-y border-border">
+              {INTERIOR_FEATURES.map((feature) => (
+                <li key={feature} className="py-3.5 text-sm text-foreground/80">
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <a
+              href="#book"
+              className="group mt-8 inline-flex items-center gap-3 text-[0.68rem] font-medium uppercase tracking-[0.28em] text-foreground transition-colors hover:text-champagne"
+            >
+              Reserve this service
+              <span className="inline-block h-px w-8 bg-champagne transition-all duration-300 group-hover:w-12" />
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ================= GALLERY ================= */}
       <section className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <SectionLabel index="05" title="Recent Work" />
+              <SectionLabel index="06" title="Recent Work" />
               <h2 className="mt-8 font-display text-4xl leading-[1.08] text-foreground lg:text-5xl">
                 From the studio floor.
               </h2>
@@ -697,7 +781,8 @@ export default function Landing() {
       {/* ================= TESTIMONIALS ================= */}
       <section className="hairline-x border-y border-border bg-ink-2">
         <div className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
-          <Reveal>              <SectionLabel index="06" title="Client Words" />
+          <Reveal>
+            <SectionLabel index="07" title="Client Words" />
           </Reveal>
 
           <div className="mt-14 grid gap-px border border-border bg-border md:grid-cols-3">
