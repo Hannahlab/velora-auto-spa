@@ -625,7 +625,7 @@ export default function Landing() {
                           : "linear-gradient(135deg, #26262a 0%, #3d3d42 55%, #777d8a 100%)",
                     }}
                   />
-                  <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-ink/90 to-transparent p-4 pt-10">
+                  <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink/90 to-transparent p-4 pt-10">
                     <p className="text-sm font-semibold text-white">{item.title}</p>
                     <span className="rounded-full border border-white/20 bg-ink/50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-soft">
                       {item.label}
