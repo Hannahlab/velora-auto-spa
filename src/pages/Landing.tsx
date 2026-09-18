@@ -15,6 +15,7 @@ const TONES = {
 const NAV_LINKS = [
   { label: "Services", href: "#services" },
   { label: "Transformation", href: "#transformation" },
+  { label: "Process", href: "#process" },
   { label: "Studio", href: "#studio" },
   { label: "Contact", href: "#book" },
 ];
@@ -32,7 +33,8 @@ const SERVICES = [
       "Interior vacuum & dressing",
       "Glass, polished and sealed",
     ],
-    tone: TONES.graphite,
+    image: "/process-1.jpg",
+    alt: "Foam wash across dark paintwork",
   },
   {
     index: "02",
@@ -46,7 +48,8 @@ const SERVICES = [
       "12-month ceramic sealant",
       "Leather feed & interior deep clean",
     ],
-    tone: TONES.champagne,
+    image: "/process-2.jpg",
+    alt: "Machine polishing a car panel",
   },
   {
     index: "03",
@@ -60,15 +63,51 @@ const SERVICES = [
       "Engine bay & trim restoration",
       "Collection & return available",
     ],
-    tone: TONES.bronze,
+    image: "/process-4.jpg",
+    alt: "Hand-applying ceramic coating",
   },
 ];
 
 const GALLERY = [
-  { title: "GT — Multi-stage correction", tone: TONES.graphite, span: "md:col-span-7", aspect: "aspect-[16/10]" },
-  { title: "Roadster — Two-year ceramic", tone: TONES.champagne, span: "md:col-span-5", aspect: "aspect-[4/3]" },
-  { title: "SUV — Interior restoration", tone: TONES.bronze, span: "md:col-span-5", aspect: "aspect-[4/3]" },
-  { title: "Coupe — Wheel-off detail", tone: TONES.silver, span: "md:col-span-7", aspect: "aspect-[16/10]" },
+  { title: "Correction work — machine polishing", src: "/process-2.jpg", span: "md:col-span-7", aspect: "aspect-[16/10]" },
+  { title: "Delivery standard — showroom finish", src: "/hero.jpg", span: "md:col-span-5", aspect: "aspect-[4/3]" },
+  { title: "Protection layer — ceramic application", src: "/process-4.jpg", span: "md:col-span-5", aspect: "aspect-[4/3]" },
+  { title: "Final inspection — under studio light", src: "/process-3.jpg", span: "md:col-span-7", aspect: "aspect-[16/10]" },
+];
+
+const PROCESS = [
+  {
+    index: "01",
+    step: "Step 01 — Wash",
+    title: "Wash & Decontamination",
+    copy: "pH-neutral foam, two-bucket contact wash, then iron and tar removal across every panel and arch.",
+    src: "/process-1.jpg",
+    alt: "Detailer rinsing thick foam across dark paintwork",
+  },
+  {
+    index: "02",
+    step: "Step 02 — Correct",
+    title: "Machine Polishing",
+    copy: "Measured compound and polish passes lift swirl marks and restore true depth to the clear coat.",
+    src: "/process-2.jpg",
+    alt: "Dual-action polisher refining a car panel",
+  },
+  {
+    index: "03",
+    step: "Step 03 — Inspect",
+    title: "Inspection Under Light",
+    copy: "Panels are examined under studio lighting and gloss is measured before any protection is applied.",
+    src: "/process-3.jpg",
+    alt: "Close inspection of paint under a work light",
+  },
+  {
+    index: "04",
+    step: "Step 04 — Protect",
+    title: "Ceramic Sealing",
+    copy: "A protective coating is applied, cured and quality-checked — locked in for twelve months or more.",
+    src: "/process-4.jpg",
+    alt: "Ceramic coating being applied by hand",
+  },
 ];
 
 const QUOTES = [
@@ -468,9 +507,14 @@ export default function Landing() {
                 <ImageReveal
                   className={`relative lg:col-span-7 ${i % 2 === 1 ? "lg:order-2" : ""}`}
                 >
-                  <div className={`relative ${i % 2 === 1 ? "aspect-[16/11]" : "aspect-[16/10]"} w-full overflow-hidden border border-border`}>
-                    <CarScene tone={service.tone} horizon={i % 2 === 1 ? "56%" : "62%"} sweep={0.16} />
-                    <span className="absolute left-5 top-5 font-display text-lg text-foreground/80">
+                  <div className="relative aspect-[16/10] w-full overflow-hidden border border-border">
+                    <img
+                      src={service.image}
+                      alt={service.alt}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover img-fade"
+                    />
+                    <span className="absolute left-5 top-5 font-display text-lg text-foreground/85">
                       {service.index}
                     </span>
                   </div>
@@ -522,9 +566,12 @@ export default function Landing() {
             <div className="relative mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2">
               {/* BEFORE */}
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink">
-                <div className="absolute inset-0 img-fade-strong">
-                  <CarScene tone={TONES.silver} horizon="58%" sweep={0.02} />
-                </div>
+                <img
+                  src="/hero.jpg"
+                  alt="Paint before correction"
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover object-[50%_60%] grayscale brightness-75"
+                />
                 <span className="absolute left-5 top-5 text-[0.6rem] uppercase tracking-[0.32em] text-foreground/60">
                   Before
                 </span>
@@ -532,9 +579,12 @@ export default function Landing() {
 
               {/* AFTER */}
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink">
-                <div className="absolute inset-0 img-fade">
-                  <CarScene tone={TONES.champagne} horizon="58%" sweep={0.22} />
-                </div>
+                <img
+                  src="/hero.jpg"
+                  alt="Paint after correction"
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover object-[50%_60%] img-fade"
+                />
                 <span className="absolute right-5 top-5 text-[0.6rem] uppercase tracking-[0.32em] text-champagne">
                   After
                 </span>
@@ -552,11 +602,55 @@ export default function Landing() {
 
           <Reveal delay={0.15}>
             <p className="mt-8 max-w-lg text-sm font-light leading-loose text-muted-foreground">
-              Left: a two-year-old daily driver under studio light. Right: after Signature
-              Correction and a twelve-month ceramic sealant. Same panel, same exposure —
-              only the paint differs.
+              Left: gloss as it arrived. Right: after Signature Correction and ceramic
+              sealing. Same panel, same exposure — only the paint differs.
             </p>
           </Reveal>
+        </div>
+      </section>
+
+      {/* ================= PROCESS ================= */}
+      <section id="process" className="hairline-x mx-auto max-w-7xl border-b border-border px-6 py-24 lg:px-10 lg:py-32">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <SectionLabel index="04" title="The Process" />
+              <h2 className="mt-8 max-w-xl font-display text-4xl leading-[1.08] text-foreground lg:text-5xl">
+                Exterior care, in four movements.
+              </h2>
+            </div>
+            <p className="max-w-xs text-sm font-light leading-relaxed text-muted-foreground">
+              Every exterior service follows the same disciplined sequence — wash, correct,
+              inspect, protect. Nothing skipped, nothing rushed.
+            </p>
+          </div>
+        </Reveal>
+
+        <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          {PROCESS.map((step, i) => (
+            <Reveal key={step.title} delay={i * 0.07}>
+              <figure className={`group ${i % 2 === 1 ? "lg:mt-12" : ""}`}>
+                <ImageReveal>
+                  <div className="relative aspect-[4/5] w-full overflow-hidden border border-border">
+                    <img
+                      src={step.src}
+                      alt={step.alt}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover img-fade transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    />
+                    <span className="absolute left-4 top-4 font-display text-lg text-foreground/90">
+                      {step.index}
+                    </span>
+                  </div>
+                </ImageReveal>
+                <figcaption className="mt-5 border-t border-border pt-4">
+                  <p className="text-[0.6rem] uppercase tracking-[0.3em] text-champagne">{step.step}</p>
+                  <p className="mt-2.5 text-sm text-foreground">{step.title}</p>
+                  <p className="mt-2 text-xs font-light leading-relaxed text-muted-foreground">{step.copy}</p>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
         </div>
       </section>
 
@@ -565,7 +659,7 @@ export default function Landing() {
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <SectionLabel index="04" title="Recent Work" />
+              <SectionLabel index="05" title="Recent Work" />
               <h2 className="mt-8 font-display text-4xl leading-[1.08] text-foreground lg:text-5xl">
                 From the studio floor.
               </h2>
@@ -582,9 +676,12 @@ export default function Landing() {
               <figure className="group">
                 <ImageReveal>
                   <div className={`relative ${item.aspect} w-full overflow-hidden border border-border`}>
-                    <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.03]">
-                      <CarScene tone={item.tone} horizon={i % 2 === 0 ? "62%" : "56%"} />
-                    </div>
+                    <img
+                      src={item.src}
+                      alt={item.title}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover img-fade grayscale transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:grayscale-0"
+                    />
                   </div>
                 </ImageReveal>
                 <figcaption className="mt-4 flex items-baseline justify-between border-t border-border pt-3">
@@ -600,8 +697,7 @@ export default function Landing() {
       {/* ================= TESTIMONIALS ================= */}
       <section className="hairline-x border-y border-border bg-ink-2">
         <div className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
-          <Reveal>
-            <SectionLabel index="05" title="Client Words" />
+          <Reveal>              <SectionLabel index="06" title="Client Words" />
           </Reveal>
 
           <div className="mt-14 grid gap-px border border-border bg-border md:grid-cols-3">
