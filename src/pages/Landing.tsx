@@ -175,6 +175,23 @@ function CarScene({
   );
 }
 
+/* ---------- hero photo (drop the file at public/hero.jpg) ---------- */
+
+function HeroPhoto() {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return <CarScene tone={TONES.graphite} horizon="60%" sweep={0.2} />;
+  }
+  return (
+    <img
+      src="/hero.jpg"
+      alt="Freshly detailed black sports car in soft natural light"
+      className="absolute inset-0 h-full w-full object-cover object-[50%_58%] img-fade"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 /* ---------- motion pieces ---------- */
 
 function Reveal({
@@ -341,11 +358,11 @@ export default function Landing() {
       {/* ================= HERO ================= */}
       <section className="relative h-[92vh] min-h-[600px] w-full overflow-hidden">
         <ImageReveal className="absolute inset-0">
-          <CarScene tone={TONES.graphite} horizon="60%" sweep={0.2} />
+          <HeroPhoto />
         </ImageReveal>
 
         {/* cinematic scrim */}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-ink/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/65" />
 
         <div className="absolute inset-x-0 bottom-0">
           <div className="mx-auto max-w-7xl px-6 pb-16 lg:px-10 lg:pb-24">
