@@ -80,7 +80,73 @@ class RootErrorBoundary extends React.Component<
   }
 }
 
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+/** `VITE_CONVEX_URL` is only present when the Convex backend is connected.
+ *  Static exports (e.g. GitHub Pages) build without it: the landing page then
+ *  renders standalone and backend routes show a friendly notice instead of
+ *  crashing the whole app into a blank page. */
+const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
+const hasConvex = Boolean(convexUrl);
+const convex = new ConvexReactClient(convexUrl ?? "https://placeholder.invalid");
+
+function AppShell() {
+  return (
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <RouteSyncer />
+      <Suspense fallback={<RouteLoading />}>
+        <AppRoutes />
+      </Suspense>
+    </BrowserRouter>
+  );
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route
+        path="/auth"
+        element={
+          hasConvex ? <AuthPage redirectAfterAuth="/dashboard" /> : <NoBackendNotice />
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          hasConvex ? (
+            <RequireAuth>
+              <Dashboard />
+            </RequireAuth>
+          ) : (
+            <NoBackendNotice />
+          )
+        }
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}
+
+/** Shown for backend routes when no Convex backend is connected. */
+function NoBackendNotice() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-6 text-center text-foreground">
+      <div className="max-w-md">
+        <p className="font-display text-3xl tracking-tight">Velora Auto Spa</p>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Sign-in and the client dashboard need the connected backend, which
+          isn't available in this environment. The full site is available on
+          the home page.
+        </p>
+        <a
+          href={import.meta.env.BASE_URL}
+          className="mt-8 inline-block border-b border-champagne pb-1 text-[0.68rem] uppercase tracking-[0.24em] text-champagne"
+        >
+          Back to the site
+        </a>
+      </div>
+    </div>
+  );
+}
 
 
 
@@ -114,30 +180,14 @@ createRoot(document.getElementById("root")!).render(
       <ToolbarErrorBoundary>
         <VlyToolbar />
       </ToolbarErrorBoundary>
-      <ConvexAuthProvider client={convex}>
-        <BrowserRouter>
-          <RouteSyncer />
-          <Suspense fallback={<RouteLoading />}>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route
-                path="/auth"
-                element={<AuthPage redirectAfterAuth="/dashboard" />}
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <RequireAuth>
-                    <Dashboard />
-                  </RequireAuth>
-                }
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-        <Toaster />
-      </ConvexAuthProvider>
+      {hasConvex ? (
+        <ConvexAuthProvider client={convex}>
+          <AppShell />
+        </ConvexAuthProvider>
+      ) : (
+        <AppShell />
+      )}
+      <Toaster />
     </RootErrorBoundary>
   </StrictMode>,
 );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
+import { asset } from "@/lib/assets";
 
 /* ---------- palette tones for studio scenes ---------- */
 
@@ -34,7 +35,7 @@ const SERVICES = [
       "Interior vacuum & dressing",
       "Glass, polished and sealed",
     ],
-    image: "/process-1.jpg",
+    image: asset("/process-1.jpg"),
     alt: "Foam wash across dark paintwork",
   },
   {
@@ -49,7 +50,7 @@ const SERVICES = [
       "12-month ceramic sealant",
       "Leather feed & interior deep clean",
     ],
-    image: "/process-2.jpg",
+    image: asset("/process-2.jpg"),
     alt: "Machine polishing a car panel",
   },
   {
@@ -64,16 +65,16 @@ const SERVICES = [
       "Engine bay & trim restoration",
       "Collection & return available",
     ],
-    image: "/process-4.jpg",
+    image: asset("/process-4.jpg"),
     alt: "Hand-applying ceramic coating",
   },
 ];
 
 const GALLERY = [
-  { title: "Correction work — machine polishing", src: "/process-2.jpg", span: "md:col-span-7", aspect: "aspect-[16/10]" },
-  { title: "Delivery standard — showroom finish", src: "/hero.jpg", span: "md:col-span-5", aspect: "aspect-[4/3]" },
-  { title: "Protection layer — ceramic application", src: "/process-4.jpg", span: "md:col-span-5", aspect: "aspect-[4/3]" },
-  { title: "Final inspection — under studio light", src: "/process-3.jpg", span: "md:col-span-7", aspect: "aspect-[16/10]" },
+  { title: "Correction work — machine polishing", src: asset("/process-2.jpg"), span: "md:col-span-7", aspect: "aspect-[16/10]" },
+  { title: "Delivery standard — showroom finish", src: asset("/hero.jpg"), span: "md:col-span-5", aspect: "aspect-[4/3]" },
+  { title: "Protection layer — ceramic application", src: asset("/process-4.jpg"), span: "md:col-span-5", aspect: "aspect-[4/3]" },
+  { title: "Final inspection — under studio light", src: asset("/process-3.jpg"), span: "md:col-span-7", aspect: "aspect-[16/10]" },
 ];
 
 const PROCESS = [
@@ -82,7 +83,7 @@ const PROCESS = [
     step: "Step 01 — Wash",
     title: "Wash & Decontamination",
     copy: "pH-neutral foam, two-bucket contact wash, then iron and tar removal across every panel and arch.",
-    src: "/process-1.jpg",
+    src: asset("/process-1.jpg"),
     alt: "Detailer rinsing thick foam across dark paintwork",
   },
   {
@@ -90,7 +91,7 @@ const PROCESS = [
     step: "Step 02 — Correct",
     title: "Machine Polishing",
     copy: "Measured compound and polish passes lift swirl marks and restore true depth to the clear coat.",
-    src: "/process-2.jpg",
+    src: asset("/process-2.jpg"),
     alt: "Dual-action polisher refining a car panel",
   },
   {
@@ -98,7 +99,7 @@ const PROCESS = [
     step: "Step 03 — Inspect",
     title: "Inspection Under Light",
     copy: "Panels are examined under studio lighting and gloss is measured before any protection is applied.",
-    src: "/process-3.jpg",
+    src: asset("/process-3.jpg"),
     alt: "Close inspection of paint under a work light",
   },
   {
@@ -106,7 +107,7 @@ const PROCESS = [
     step: "Step 04 — Protect",
     title: "Ceramic Sealing",
     copy: "A protective coating is applied, cured and quality-checked — locked in for twelve months or more.",
-    src: "/process-4.jpg",
+    src: asset("/process-4.jpg"),
     alt: "Ceramic coating being applied by hand",
   },
 ];
@@ -232,7 +233,7 @@ function HeroPhoto() {
   }
   return (
     <img
-      src="/hero.jpg"
+      src={asset("/hero.jpg")}
       alt="Freshly detailed black sports car in soft natural light"
       className="absolute inset-0 h-full w-full object-cover object-[50%_58%] img-fade"
       onError={() => setFailed(true)}
@@ -268,16 +269,24 @@ function ImageReveal({
   children,
   delay = 0,
   className,
+  animateOnMount = false,
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
+  /** Animate on page load instead of scroll-into-view — used for the hero so
+   *  the image can never get stuck invisible if scroll observers misbehave. */
+  animateOnMount?: boolean;
 }) {
   return (
     <motion.div
       initial={{ clipPath: "inset(0 0 100% 0)" }}
-      whileInView={{ clipPath: "inset(0 0 0% 0)" }}
-      viewport={{ once: true, margin: "-60px" }}
+      {...(animateOnMount
+        ? { animate: { clipPath: "inset(0 0 0% 0)" } }
+        : {
+            whileInView: { clipPath: "inset(0 0 0% 0)" },
+            viewport: { once: true, margin: "-60px" },
+          })}
       transition={{ duration: 1, delay, ease: [0.33, 1, 0.68, 1] }}
       className={className}
     >
@@ -396,7 +405,7 @@ export default function Landing() {
                 </a>
               ))}
             </div>
-            <CtaLink href="#book" solid className="mt-8 w-full justify-center" >
+            <CtaLink href="#book" solid className="mt-8 w-full justify-center">
               Book Your Detail
             </CtaLink>
           </nav>
@@ -405,7 +414,7 @@ export default function Landing() {
 
       {/* ================= HERO ================= */}
       <section className="relative h-[92vh] min-h-[600px] w-full overflow-hidden">
-        <ImageReveal className="absolute inset-0">
+        <ImageReveal className="absolute inset-0" animateOnMount>
           <HeroPhoto />
         </ImageReveal>
 
@@ -576,7 +585,7 @@ export default function Landing() {
               {/* BEFORE */}
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink">
                 <img
-                  src="/hero.jpg"
+                  src={asset("/hero.jpg")}
                   alt="Paint before correction"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover object-[50%_60%] grayscale brightness-75"
@@ -589,7 +598,7 @@ export default function Landing() {
               {/* AFTER */}
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink">
                 <img
-                  src="/hero.jpg"
+                  src={asset("/hero.jpg")}
                   alt="Paint after correction"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover object-[50%_60%] img-fade"
@@ -685,8 +694,7 @@ export default function Landing() {
           <div className="relative mb-12 lg:col-span-7 lg:mb-0">
             <ImageReveal>
               <div className="relative aspect-[16/10] w-full overflow-hidden border border-border">
-                <img
-                  src="/interior-2.jpg"
+                <img                      src={asset("/interior-2.jpg")}
                   alt="Restored luxury car interior"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover img-fade"
@@ -698,8 +706,7 @@ export default function Landing() {
             </ImageReveal>
             <ImageReveal delay={0.25} className="absolute -bottom-12 right-0 w-[46%] lg:-right-10">
               <div className="relative aspect-[4/3] w-full overflow-hidden border border-border bg-ink shadow-2xl shadow-black/60">
-                <img
-                  src="/interior-1.jpg"
+                <img                      src={asset("/interior-1.jpg")}
                   alt="Interior detailing in progress"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover img-fade"
