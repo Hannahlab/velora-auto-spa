@@ -35,7 +35,7 @@ const SERVICES = [
       "Interior vacuum & dressing",
       "Glass, polished and sealed",
     ],
-    image: asset("/process-1.jpg"),
+    image: asset("/process-1.webp"),
     alt: "Foam wash across dark paintwork",
   },
   {
@@ -50,7 +50,7 @@ const SERVICES = [
       "12-month ceramic sealant",
       "Leather feed & interior deep clean",
     ],
-    image: asset("/process-2.jpg"),
+    image: asset("/process-2.webp"),
     alt: "Machine polishing a car panel",
   },
   {
@@ -65,16 +65,16 @@ const SERVICES = [
       "Engine bay & trim restoration",
       "Collection & return available",
     ],
-    image: asset("/process-4.jpg"),
+    image: asset("/process-4.webp"),
     alt: "Hand-applying ceramic coating",
   },
 ];
 
 const GALLERY = [
-  { title: "Correction work — machine polishing", src: asset("/process-2.jpg"), span: "md:col-span-7", aspect: "aspect-[16/10]" },
-  { title: "Delivery standard — showroom finish", src: asset("/hero.jpg"), span: "md:col-span-5", aspect: "aspect-[4/3]" },
-  { title: "Protection layer — ceramic application", src: asset("/process-4.jpg"), span: "md:col-span-5", aspect: "aspect-[4/3]" },
-  { title: "Final inspection — under studio light", src: asset("/process-3.jpg"), span: "md:col-span-7", aspect: "aspect-[16/10]" },
+  { title: "Correction work — machine polishing", src: asset("/process-2.webp"), span: "md:col-span-7", aspect: "aspect-[16/10]" },
+  { title: "Delivery standard — showroom finish", src: asset("/hero.webp"), span: "md:col-span-5", aspect: "aspect-[4/3]" },
+  { title: "Protection layer — ceramic application", src: asset("/process-4.webp"), span: "md:col-span-5", aspect: "aspect-[4/3]" },
+  { title: "Final inspection — under studio light", src: asset("/process-3.webp"), span: "md:col-span-7", aspect: "aspect-[16/10]" },
 ];
 
 const PROCESS = [
@@ -83,7 +83,7 @@ const PROCESS = [
     step: "Step 01 — Wash",
     title: "Wash & Decontamination",
     copy: "pH-neutral foam, two-bucket contact wash, then iron and tar removal across every panel and arch.",
-    src: asset("/process-1.jpg"),
+    src: asset("/process-1.webp"),
     alt: "Detailer rinsing thick foam across dark paintwork",
   },
   {
@@ -91,7 +91,7 @@ const PROCESS = [
     step: "Step 02 — Correct",
     title: "Machine Polishing",
     copy: "Measured compound and polish passes lift swirl marks and restore true depth to the clear coat.",
-    src: asset("/process-2.jpg"),
+    src: asset("/process-2.webp"),
     alt: "Dual-action polisher refining a car panel",
   },
   {
@@ -99,7 +99,7 @@ const PROCESS = [
     step: "Step 03 — Inspect",
     title: "Inspection Under Light",
     copy: "Panels are examined under studio lighting and gloss is measured before any protection is applied.",
-    src: asset("/process-3.jpg"),
+    src: asset("/process-3.webp"),
     alt: "Close inspection of paint under a work light",
   },
   {
@@ -107,7 +107,7 @@ const PROCESS = [
     step: "Step 04 — Protect",
     title: "Ceramic Sealing",
     copy: "A protective coating is applied, cured and quality-checked — locked in for twelve months or more.",
-    src: asset("/process-4.jpg"),
+    src: asset("/process-4.webp"),
     alt: "Ceramic coating being applied by hand",
   },
 ];
@@ -224,7 +224,7 @@ function CarScene({
   );
 }
 
-/* ---------- hero photo (drop the file at public/hero.jpg) ---------- */
+/* ---------- hero photo (public/hero.webp) ---------- */
 
 function HeroPhoto() {
   const [failed, setFailed] = useState(false);
@@ -233,9 +233,11 @@ function HeroPhoto() {
   }
   return (
     <img
-      src={asset("/hero.jpg")}
+      src={asset("/hero.webp")}
       alt="Freshly detailed black sports car in soft natural light"
       className="absolute inset-0 h-full w-full object-cover object-[50%_58%] img-fade"
+      fetchPriority="high"
+      decoding="async"
       onError={() => setFailed(true)}
     />
   );
@@ -585,7 +587,7 @@ export default function Landing() {
               {/* BEFORE */}
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink">
                 <img
-                  src={asset("/hero.jpg")}
+                  src={asset("/hero.webp")}
                   alt="Paint before correction"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover object-[50%_60%] grayscale brightness-75"
@@ -598,7 +600,7 @@ export default function Landing() {
               {/* AFTER */}
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink">
                 <img
-                  src={asset("/hero.jpg")}
+                  src={asset("/hero.webp")}
                   alt="Paint after correction"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover object-[50%_60%] img-fade"
@@ -694,7 +696,8 @@ export default function Landing() {
           <div className="relative mb-12 lg:col-span-7 lg:mb-0">
             <ImageReveal>
               <div className="relative aspect-[16/10] w-full overflow-hidden border border-border">
-                <img                      src={asset("/interior-2.jpg")}
+                <img
+                  src={asset("/interior-2.webp")}
                   alt="Restored luxury car interior"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover img-fade"
@@ -706,7 +709,8 @@ export default function Landing() {
             </ImageReveal>
             <ImageReveal delay={0.25} className="absolute -bottom-12 right-0 w-[46%] lg:-right-10">
               <div className="relative aspect-[4/3] w-full overflow-hidden border border-border bg-ink shadow-2xl shadow-black/60">
-                <img                      src={asset("/interior-1.jpg")}
+                <img
+                  src={asset("/interior-1.webp")}
                   alt="Interior detailing in progress"
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover img-fade"
